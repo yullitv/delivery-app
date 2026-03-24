@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
 import ShopPage from "./pages/ShopPage";
 import CartPage from "./pages/CartPage";
@@ -8,6 +9,7 @@ import CouponsPage from "./pages/CouponsPage";
 function App() {
   return (
     <Router>
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <main className="container mx-auto py-6 px-4">

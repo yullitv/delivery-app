@@ -61,7 +61,9 @@ const OrderSummary = ({
             </div>
           )}
           <div className="flex justify-between items-center pt-2 border-t border-orange-100">
-            <span className="text-gray-800 font-bold text-lg">Total Amount:</span>
+            <span className="text-gray-800 font-bold text-lg">
+              Total Amount:
+            </span>
             <span className="text-3xl font-black text-gray-900">
               ₴{totalPrice.toFixed(2)}
             </span>
@@ -70,11 +72,11 @@ const OrderSummary = ({
 
         <button
           type="submit"
-          form="order-form" // Зв'язок із формою в іншому компоненті
+          form="order-form"
           disabled={isSubmitting}
           className={cn(
             "w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-orange-200 transition-all flex justify-center items-center gap-2",
-            "disabled:bg-orange-300 disabled:cursor-not-allowed active:scale-[0.98]"
+            "disabled:bg-orange-300 disabled:cursor-not-allowed active:scale-[0.98]",
           )}
         >
           {isSubmitting ? (

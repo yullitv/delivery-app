@@ -5,23 +5,19 @@ export const createOrder = async (req: Request, res: Response) => {
   try {
     const { userName, email, phone, address, items } = req.body;
 
-    // 1. Перевірка наявності обов'язкових полів
     if (!userName || !email || !phone || !address || !items) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // 2. Перевірка кошика
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: "Cart cannot be empty" });
     }
 
-    // 3. Базова валідація формату email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ error: "Invalid email format" });
     }
 
-    // Якщо все ок — створюємо
     const order = await orderService.createOrder(req.body);
     res.status(201).json(order);
   } catch (error) {

@@ -1,10 +1,22 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { getOrderHistory } from "../api/orderService";
 import { useCartStore } from "../store/useCartStore";
-import { normalizePhoneNumber, validateEmail, validatePhone } from "../lib/validation";
+import {
+  normalizePhoneNumber,
+  validateEmail,
+  validatePhone,
+} from "../lib/validation";
 import Card from "../components/ui/Card";
-import Input from "../components/ui/Input"; // Використовуємо наш новий компонент
-import { Search, RotateCcw, Package, Calendar, MapPin, Info } from "lucide-react";
+import Input from "../components/ui/Input";
+import {
+  Search,
+  RotateCcw,
+  Package,
+  Calendar,
+  MapPin,
+  Info,
+} from "lucide-react";
 
 const HistoryPage = () => {
   const [email, setEmail] = useState("");
@@ -19,19 +31,17 @@ const HistoryPage = () => {
     e.preventDefault();
     setErrors({});
 
-    // Логіка "АБО": перевіряємо, чи заповнене хоча б одне поле
     if (!email.trim() && !phone.trim()) {
-      return alert("Please enter either an email address or a phone number to search.");
+      return toast.error("Please enter email or phone to search");
     }
 
-    // Додаткова валідація, якщо поле заповнене
     let hasError = false;
     if (email && !validateEmail(email)) {
-      setErrors(prev => ({ ...prev, email: "Invalid email format" }));
+      setErrors((prev) => ({ ...prev, email: "Invalid email format" }));
       hasError = true;
     }
     if (phone && !validatePhone(phone)) {
-      setErrors(prev => ({ ...prev, phone: "Invalid phone format" }));
+      setErrors((prev) => ({ ...prev, phone: "Invalid phone format" }));
       hasError = true;
     }
 
@@ -39,12 +49,17 @@ const HistoryPage = () => {
 
     setLoading(true);
     try {
-      // Відправляємо нормалізований номер, якщо він є
       const searchPhone = phone ? normalizePhoneNumber(phone) : "";
       const data = await getOrderHistory(email, searchPhone);
       setOrders(data);
+
+      if (data.length === 0) {
+        toast("No orders found for this contact", { icon: "🔍" });
+      } else {
+        toast.success(`Found ${data.length} orders`);
+      }
     } catch (error) {
-      alert("Failed to fetch history. Please try again later.");
+      toast.error("Failed to fetch history");
     } finally {
       setLoading(false);
     }
@@ -56,7 +71,7 @@ const HistoryPage = () => {
         addItem(item.product);
       }
     });
-    alert("Items from previous order added to cart!");
+    toast.success("Items added to cart!");
   };
 
   return (
@@ -94,7 +109,7 @@ const HistoryPage = () => {
               className="bg-white"
             />
           </div>
-          
+
           <button
             type="submit"
             disabled={loading}
@@ -106,66 +121,65 @@ const HistoryPage = () => {
       </Card>
 
       <div className="space-y-6">
-        {orders.length > 0 ? (
-          orders.map((order) => (
-            <Card
-              key={order.id}
-              className="border-l-4 border-l-orange-500 hover:shadow-md transition-shadow"
-            >
-              <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Calendar size={14} />
-                    {new Date(order.createdAt).toLocaleDateString()}
+        {orders.length > 0
+          ? orders.map((order) => (
+              <Card
+                key={order.id}
+                className="border-l-4 border-l-orange-500 hover:shadow-md transition-shadow"
+              >
+                <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <Calendar size={14} />
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                      <Package size={18} className="text-orange-400" />
+                      Order #{order.id}
+                    </h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <MapPin size={14} />
+                      {order.address}
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    <Package size={18} className="text-orange-400" />
-                    Order #{order.id}
-                  </h3>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <MapPin size={14} />
-                    {order.address}
+
+                  <div className="text-right space-y-2">
+                    <div className="text-2xl font-black text-gray-900">
+                      ₴{order.totalPrice.toFixed(2)}
+                    </div>
+                    <button
+                      onClick={() => handleReorder(order.items)}
+                      className="flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-bold hover:bg-orange-200 transition-colors ml-auto active:scale-95"
+                    >
+                      <RotateCcw size={18} />
+                      Reorder
+                    </button>
                   </div>
                 </div>
 
-                <div className="text-right space-y-2">
-                  <div className="text-2xl font-black text-gray-900">
-                    ₴{order.totalPrice.toFixed(2)}
-                  </div>
-                  <button
-                    onClick={() => handleReorder(order.items)}
-                    className="flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-bold hover:bg-orange-200 transition-colors ml-auto active:scale-95"
-                  >
-                    <RotateCcw size={18} />
-                    Reorder
-                  </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 border-t border-gray-50">
+                  {order.items.map((item: any) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg"
+                    >
+                      <div className="w-10 h-10 bg-white rounded flex items-center justify-center text-xs font-bold text-orange-500 shadow-sm border border-orange-50">
+                        x{item.quantity}
+                      </div>
+                      <div className="text-sm font-medium text-gray-700 truncate">
+                        {item.product.name}
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </Card>
+            ))
+          : !loading &&
+            orders.length === 0 && (
+              <div className="text-center py-20 text-gray-400 italic bg-white rounded-xl border-2 border-dashed border-gray-100">
+                No orders found. Enter details above to see your history.
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 border-t border-gray-50">
-                {order.items.map((item: any) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg"
-                  >
-                    <div className="w-10 h-10 bg-white rounded flex items-center justify-center text-xs font-bold text-orange-500 shadow-sm border border-orange-50">
-                      x{item.quantity}
-                    </div>
-                    <div className="text-sm font-medium text-gray-700 truncate">
-                      {item.product.name}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          ))
-        ) : (
-          !loading && orders.length === 0 && (
-            <div className="text-center py-20 text-gray-400 italic bg-white rounded-xl border-2 border-dashed border-gray-100">
-              No orders found. Enter details above to see your history.
-            </div>
-          )
-        )}
+            )}
       </div>
     </div>
   );

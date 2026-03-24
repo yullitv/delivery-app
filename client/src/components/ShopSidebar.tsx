@@ -61,15 +61,19 @@ const ShopSidebar = ({
                 "border-2 border-transparent",
                 selectedShopId === shop.id
                   ? "bg-orange-500 text-white shadow-lg shadow-orange-100 scale-[1.02]"
-                  : "bg-gray-50 text-gray-600 hover:bg-orange-50 hover:text-orange-600"
+                  : "bg-gray-50 text-gray-600 hover:bg-orange-50 hover:text-orange-600",
               )}
             >
               <div className="flex justify-between items-center">
                 <span className="truncate pr-2">{shop.name}</span>
-                <div className={cn(
-                  "flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full",
-                  selectedShopId === shop.id ? "bg-white/20" : "bg-white shadow-sm text-orange-500"
-                )}>
+                <div
+                  className={cn(
+                    "flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full",
+                    selectedShopId === shop.id
+                      ? "bg-white/20"
+                      : "bg-white shadow-sm text-orange-500",
+                  )}
+                >
                   <Star size={10} fill="currentColor" />
                   {shop.rating.toFixed(1)}
                 </div>
@@ -78,7 +82,9 @@ const ShopSidebar = ({
           ))}
           {filteredShops.length === 0 && (
             <div className="text-center py-6 px-2">
-              <p className="text-xs text-gray-400 italic">No shops matching this rating</p>
+              <p className="text-xs text-gray-400 italic">
+                No shops matching this rating
+              </p>
             </div>
           )}
         </div>

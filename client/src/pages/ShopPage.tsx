@@ -36,14 +36,20 @@ const ShopPage = () => {
   if (shopsLoading)
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
-         <div className="animate-pulse text-orange-500 font-bold text-xl">Loading Shops...</div>
+        <div className="animate-pulse text-orange-500 font-bold text-xl">
+          Loading Shops...
+        </div>
       </div>
     );
 
   const currentShopName = shops.find((s) => s.id === selectedShopId)?.name;
 
-return (
-    <div className={cn("flex flex-col md:flex-row gap-6 items-start pb-10 px-2 md:px-0")}>
+  return (
+    <div
+      className={cn(
+        "flex flex-col md:flex-row gap-6 items-start pb-10 px-2 md:px-0",
+      )}
+    >
       <ShopSidebar
         shops={shops}
         selectedShopId={selectedShopId}
@@ -57,9 +63,9 @@ return (
               {selectedShopId ? currentShopName : "Select a Shop"}
             </h2>
             {selectedShopId && (
-               <p className="text-gray-400 text-sm font-medium">
-                 Discover the best dishes from our menu
-               </p>
+              <p className="text-gray-400 text-sm font-medium">
+                Discover the best dishes from our menu
+              </p>
             )}
           </div>
 
@@ -101,9 +107,9 @@ return (
             >
               {productsLoading ? (
                 <div className="flex items-center gap-2 text-orange-500 font-bold animate-pulse">
-                   <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" />
-                   <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-                   <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" />
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce [animation-delay:0.2s]" />
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce [animation-delay:0.4s]" />
                 </div>
               ) : !hasMore && products.length > 0 ? (
                 <span className="text-gray-300 text-sm font-medium bg-gray-50 px-4 py-2 rounded-full">
@@ -114,10 +120,10 @@ return (
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-gray-300 space-y-4">
-             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl opacity-50">
-               🍔
-             </div>
-             <p className="font-bold text-lg">Pick a restaurant to see the menu</p>
+            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl opacity-50"></div>
+            <p className="font-bold text-lg">
+              Pick a restaurant to see the menu
+            </p>
           </div>
         )}
       </Card>

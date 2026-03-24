@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware"; // Імпортуємо persist
+import { persist } from "zustand/middleware";
 import type { Product } from "../types";
 
 interface CartItem extends Product {
@@ -49,7 +49,7 @@ export const useCartStore = create<CartState>()(
       clearCart: () => set({ items: [] }),
     }),
     {
-      name: "delivery-app-cart", // Унікальний ключ у LocalStorage
+      name: "delivery-app-cart",
     }
   )
 );

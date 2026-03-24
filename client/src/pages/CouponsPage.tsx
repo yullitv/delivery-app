@@ -1,6 +1,5 @@
 import Card from "../components/ui/Card";
-import { Gift } from "lucide-react"; // Додамо іконку для солідності
-
+import { Gift } from "lucide-react";
 const CouponsPage = () => {
   return (
     <Card className="min-h-150 flex flex-col">
