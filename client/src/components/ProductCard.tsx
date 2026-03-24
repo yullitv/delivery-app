@@ -1,16 +1,21 @@
 import type { Product } from '../types';
-import { cn } from '../lib/utils'; 
+import { cn } from '../lib/utils';
+import { useCartStore } from '../store/useCartStore'; // Імпортуємо стор
+import { ShoppingBasket } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const addItem = useCartStore((state) => state.addItem); // Дістаємо функцію додавання
+
   return (
     <div className={cn(
       "group bg-white rounded-xl overflow-hidden border border-gray-100",
       "hover:shadow-lg transition-all duration-300 flex flex-col"
     )}>
+      {/* ... блок з зображенням залишається без змін ... */}
       <div className="aspect-video bg-gray-100 relative overflow-hidden flex items-center justify-center text-gray-400">
         No Image
         <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-sm font-bold text-gray-800">
@@ -28,10 +33,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </p>
         </div>
         
-        <button className={cn(
-          "mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg",
-          "flex items-center justify-center gap-2 transition-colors font-medium active:scale-95"
-        )}>
+        <button 
+          onClick={() => addItem(product)} // Викликаємо додавання
+          className={cn(
+            "mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg",
+            "flex items-center justify-center gap-2 transition-colors font-medium active:scale-95"
+          )}
+        >
+          <ShoppingBasket size={18} />
           Add to Cart
         </button>
       </div>

@@ -1,10 +1,9 @@
 import { Router } from 'express';
 import * as orderController from '../controllers/orderController.js';
-import { validateOrder } from '../middleware/validateOrder.js';
 
 const router = Router();
 
-router.post('/', validateOrder, orderController.checkout);
-router.get('/history', orderController.getHistory);
+router.post('/', orderController.createOrder);
+router.get('/history', orderController.getOrdersByContact);
 
 export default router;
