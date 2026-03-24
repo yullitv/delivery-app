@@ -9,7 +9,6 @@ export const getProductsByShop = async (
 ) => {
   const skip = (page - 1) * limit;
 
-  // Визначаємо сортування
   let orderBy: any = { id: 'asc' };
   if (sortBy === 'price-asc') orderBy = { price: 'asc' };
   if (sortBy === 'price-desc') orderBy = { price: 'desc' };
@@ -18,9 +17,6 @@ export const getProductsByShop = async (
   return await prisma.product.findMany({
     where: {
       shopId,
-      // Використовуємо spread (...), щоб властивість category 
-      // з'явилася в об'єкті ТІЛЬКИ якщо вона існує.
-      // Це прибирає помилку "undefined is not assignable".
       ...(category && category !== '' ? { category } : {}),
     },
     skip,

@@ -1,33 +1,26 @@
 import { useState, useEffect } from 'react';
-// НОВЕ: бібліотека для відстеження скролу (ми її встановлювали)
 import { useInView } from 'react-intersection-observer'; 
 import { useShops } from '../hooks/useShops';
-// НОВЕ: тепер цей хук існує
 import { useInfiniteProducts } from '../hooks/useInfiniteProducts'; 
 import ShopSidebar from '../components/ShopSidebar';
-// НОВЕ: тепер цей компонент існує
 import ProductCard from '../components/ProductCard'; 
 import Card from '../components/ui/Card';
 import { cn } from '../lib/utils';
 
 const ShopPage = () => {
-  // НОВЕ: Стейт для фільтрів та сортування (Middle Level requirement)
   const [category, setCategory] = useState('');
   const [sortBy, setSortBy] = useState('name-asc');
   
   const { shops, selectedShopId, setSelectedShopId, loading: shopsLoading } = useShops();
   
-  // НОВЕ: Використовуємо наш Infinite Hook, передаючи фільтри
   const { products, loading: productsLoading, hasMore, loadMore } = useInfiniteProducts(
     selectedShopId, 
     category, 
     sortBy
   );
 
-  // НОВЕ: Налаштування Observer для Infinite Scroll (Advanced Level)
   const { ref, inView } = useInView();
 
-  // НОВЕ: Коли елемент-тригер внизу з'являється в полі зору — підвантажуємо ще
   useEffect(() => {
     if (inView && hasMore && !productsLoading) {
       loadMore();
@@ -47,14 +40,12 @@ const ShopPage = () => {
       />
 
       <Card className="flex-1 min-h-150">
-        {/* НОВЕ: Header зі стейтом фільтрів та сортування (Middle Level) */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <h2 className="text-2xl font-bold text-gray-800">
             {selectedShopId ? `Products from ${currentShopName}` : 'Select a shop'}
           </h2>
           
           <div className="flex flex-wrap gap-2">
-            {/* Селект Категорій */}
             <select 
               value={category} 
               onChange={(e) => setCategory(e.target.value)}
@@ -66,7 +57,6 @@ const ShopPage = () => {
               <option value="Desserts">Desserts</option>
             </select>
 
-            {/* Селект Сортування */}
             <select 
               value={sortBy} 
               onChange={(e) => setSortBy(e.target.value)}
@@ -81,15 +71,12 @@ const ShopPage = () => {
 
         {selectedShopId ? (
           <>
-            {/* Сітка товарів */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product) => (
-                // Використовуємо справжній ProductCard
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
             
-            {/* НОВЕ: Елемент-тригер для нескінченного скролу (Advanced Level requirement) */}
             <div ref={ref} className="py-8 text-center flex justify-center items-center h-16 mt-6">
               {productsLoading && <p className="text-orange-500 font-medium animate-pulse">Loading more items...</p>}
               {!hasMore && products.length > 0 && <p className="text-gray-400 italic text-sm">No more products in this shop.</p>}
