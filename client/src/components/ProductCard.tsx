@@ -1,7 +1,7 @@
 import type { Product } from "../types";
 import { cn } from "../lib/utils";
 import { useCartStore } from "../store/useCartStore";
-import { ShoppingBasket } from "lucide-react";
+import { ShoppingBasket, UtensilsCrossed } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -17,9 +17,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
         "hover:shadow-lg transition-all duration-300 flex flex-col",
       )}
     >
-      <div className="aspect-video bg-gray-100 relative overflow-hidden flex items-center justify-center text-gray-400">
-        No Image
-        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-sm font-bold text-gray-800">
+      <div className="aspect-video bg-gray-50 relative overflow-hidden flex items-center justify-center">
+        {product.image ? (
+          <img 
+            src={product.image} 
+            alt={product.name} 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center text-orange-200">
+            <UtensilsCrossed size={48} strokeWidth={1.5} />
+            <span className="text-[10px] font-bold uppercase tracking-widest mt-2 opacity-50">Delicious</span>
+          </div>
+        )}
+        
+        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-sm font-bold text-gray-800 shadow-sm">
           ₴{product.price.toFixed(2)}
         </div>
       </div>

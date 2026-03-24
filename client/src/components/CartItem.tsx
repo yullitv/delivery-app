@@ -1,4 +1,4 @@
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, Utensils } from "lucide-react";
 import type { Product } from "../types";
 
 interface CartItemProps {
@@ -23,7 +23,9 @@ const CartItem = ({
           className="w-full h-full object-cover transition-transform hover:scale-110"
         />
       ) : (
-        <span className="text-xs italic">No image</span>
+        <div className="flex flex-col items-center gap-1 opacity-40">
+          <Utensils size={24} />
+        </div>
       )}
     </div>
     <div className="flex-1">
