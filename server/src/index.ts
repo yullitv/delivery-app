@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
-import process from 'node:process';
-import { prisma } from './lib/prisma.js'; 
+import shopRoutes from './routes/shopRoutes.js';
+import productRoutes from './routes/productRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+import couponRoutes from './routes/couponRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -10,19 +12,15 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is running' });
-});
+app.use('/api/shops', shopRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/coupons', couponRoutes);
 
-app.get('/api/shops', async (req, res) => {
-  try {
-    const shops = await prisma.shop.findMany();
-    res.json(shops);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch shops' });
-  }
+app.get('/', (req, res) => {
+  res.send('API is running');
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is flying on http://localhost:${PORT}`);
+  console.log(`Server started on port ${PORT}`);
 });
