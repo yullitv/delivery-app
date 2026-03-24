@@ -20,6 +20,7 @@
   },
   "include": [
     "src/**/*",
-    "prisma.config.ts"
+    "prisma.config.ts",
+    "prisma/seed.ts"
   ]
 }
