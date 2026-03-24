@@ -35,32 +35,39 @@ const ShopPage = () => {
 
   if (shopsLoading)
     return (
-      <div className="text-center py-10 font-medium">Loading shops...</div>
+      <div className="flex justify-center items-center min-h-[60vh]">
+         <div className="animate-pulse text-orange-500 font-bold text-xl">Loading Shops...</div>
+      </div>
     );
 
   const currentShopName = shops.find((s) => s.id === selectedShopId)?.name;
 
-  return (
-    <div className={cn("flex flex-col md:flex-row gap-6")}>
+return (
+    <div className={cn("flex flex-col md:flex-row gap-6 items-start pb-10 px-2 md:px-0")}>
       <ShopSidebar
         shops={shops}
         selectedShopId={selectedShopId}
         onSelectShop={setSelectedShopId}
       />
 
-      <Card className="flex-1 min-h-150">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {selectedShopId
-              ? `Products from ${currentShopName}`
-              : "Select a shop"}
-          </h2>
+      <Card className="flex-1 min-h-150 w-full p-4 md:p-8 relative z-0">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-gray-50 pb-6">
+          <div className="space-y-1">
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">
+              {selectedShopId ? currentShopName : "Select a Shop"}
+            </h2>
+            {selectedShopId && (
+               <p className="text-gray-400 text-sm font-medium">
+                 Discover the best dishes from our menu
+               </p>
+            )}
+          </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full sm:w-40 px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-orange-500 transition-all cursor-pointer shadow-sm"
             >
               <option value="">All Categories</option>
               <option value="Burgers">Burgers</option>
@@ -71,9 +78,9 @@ const ShopPage = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full sm:w-48 px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-orange-500 transition-all cursor-pointer shadow-sm"
             >
-              <option value="name-asc">Alphabetical (A → Z)</option>
+              <option value="name-asc">A → Z</option>
               <option value="price-asc">Price: Low to High</option>
               <option value="price-desc">Price: High to Low</option>
             </select>
@@ -82,7 +89,7 @@ const ShopPage = () => {
 
         {selectedShopId ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -90,28 +97,27 @@ const ShopPage = () => {
 
             <div
               ref={ref}
-              className="py-8 text-center flex justify-center items-center h-16 mt-6"
+              className="py-12 text-center flex justify-center items-center h-24 mt-6"
             >
-              {productsLoading && (
-                <p className="text-orange-500 font-medium animate-pulse">
-                  Loading more items...
-                </p>
-              )}
-              {!hasMore && products.length > 0 && (
-                <p className="text-gray-400 italic text-sm">
-                  No more products in this shop.
-                </p>
-              )}
-              {!productsLoading && products.length === 0 && (
-                <p className="text-gray-500 italic py-10">
-                  No products match your filters.
-                </p>
-              )}
+              {productsLoading ? (
+                <div className="flex items-center gap-2 text-orange-500 font-bold animate-pulse">
+                   <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" />
+                   <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce [animation-delay:0.2s]" />
+                   <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+                </div>
+              ) : !hasMore && products.length > 0 ? (
+                <span className="text-gray-300 text-sm font-medium bg-gray-50 px-4 py-2 rounded-full">
+                  No more items to show
+                </span>
+              ) : null}
             </div>
           </>
         ) : (
-          <div className="flex items-center justify-center h-64 text-gray-400 border-2 border-dashed border-gray-100 rounded-xl">
-            Please select a shop to start ordering
+          <div className="flex flex-col items-center justify-center py-20 text-gray-300 space-y-4">
+             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl opacity-50">
+               🍔
+             </div>
+             <p className="font-bold text-lg">Pick a restaurant to see the menu</p>
           </div>
         )}
       </Card>

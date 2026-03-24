@@ -1,6 +1,6 @@
 import type { Shop } from "../types";
 import { cn } from "../lib/utils";
-import { Star } from "lucide-react";
+import { Star, Filter, Store } from "lucide-react";
 import { useState } from "react";
 
 interface ShopSidebarProps {
@@ -19,12 +19,15 @@ const ShopSidebar = ({
   const filteredShops = shops.filter((shop) => shop.rating >= minRating);
 
   return (
-    <aside className="w-full md:w-64 space-y-6 sticky top-20 h-fit">
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-        <h2 className="text-xl font-bold mb-4 px-2">Filters</h2>
-        <div className="px-2 space-y-3">
-          <label className="text-sm font-medium text-gray-600">
-            Minimum Rating: {minRating}
+    <aside className="w-full md:w-64 space-y-6 md:sticky md:top-24 h-fit z-30">
+      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+        <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-800">
+          <Filter size={18} className="text-orange-500" />
+          Filters
+        </h2>
+        <div className="space-y-3">
+          <label className="text-sm font-semibold text-gray-600">
+            Min. Rating: <span className="text-orange-600">{minRating}</span>
           </label>
           <input
             type="range"
@@ -33,42 +36,50 @@ const ShopSidebar = ({
             step="0.5"
             value={minRating}
             onChange={(e) => setMinRating(parseFloat(e.target.value))}
-            className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
+            className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
           />
-          <div className="flex justify-between text-[10px] text-gray-400 px-1 font-bold">
-            <span>0</span>
+          <div className="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-tighter">
+            <span>Low</span>
             <span>2.5</span>
-            <span>5.0</span>
+            <span>High</span>
           </div>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-        <h2 className="text-xl font-bold mb-4 px-2">Shops</h2>
-        <div className="flex flex-col gap-2">
+      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+        <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-800">
+          <Store size={18} className="text-orange-500" />
+          Shops
+        </h2>
+        <div className="flex flex-col gap-2.5">
           {filteredShops.map((shop) => (
             <button
               key={shop.id}
               onClick={() => onSelectShop(shop.id)}
               className={cn(
-                "w-full text-left px-4 py-3 rounded-lg transition-all font-medium bg-gray-50 text-gray-700 hover:bg-orange-100",
-                selectedShopId === shop.id &&
-                  "bg-orange-500 text-white shadow-md transform scale-[1.02]",
+                "w-full text-left px-4 py-3 rounded-xl transition-all duration-200 font-medium",
+                "border-2 border-transparent",
+                selectedShopId === shop.id
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-100 scale-[1.02]"
+                  : "bg-gray-50 text-gray-600 hover:bg-orange-50 hover:text-orange-600"
               )}
             >
               <div className="flex justify-between items-center">
-                <span>{shop.name}</span>
-                <div className="flex items-center gap-1 text-xs">
-                  <Star size={12} fill="currentColor" />
-                  {shop.rating}
+                <span className="truncate pr-2">{shop.name}</span>
+                <div className={cn(
+                  "flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full",
+                  selectedShopId === shop.id ? "bg-white/20" : "bg-white shadow-sm text-orange-500"
+                )}>
+                  <Star size={10} fill="currentColor" />
+                  {shop.rating.toFixed(1)}
                 </div>
               </div>
             </button>
           ))}
           {filteredShops.length === 0 && (
-            <p className="text-xs text-center text-gray-400 py-4">
-              No shops with such rating
-            </p>
+            <div className="text-center py-6 px-2">
+              <p className="text-xs text-gray-400 italic">No shops matching this rating</p>
+            </div>
           )}
         </div>
       </div>

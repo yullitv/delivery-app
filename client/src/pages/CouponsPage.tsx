@@ -8,7 +8,6 @@ const CouponsPage = () => {
         Special Offers & Coupons
       </h1>
 
-      {/* Центруємо контент по вертикалі та горизонталі всередині Card */}
       <div className="flex-1 flex items-center justify-center">
         <div className="max-w-sm w-full border-2 border-dashed border-orange-200 p-10 rounded-2xl bg-orange-50/50 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow">
           <div className="bg-white p-4 rounded-full shadow-inner mb-4">
