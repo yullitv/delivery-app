@@ -1,0 +1,17 @@
+node_modules/
+package-lock.json
+
+dist/
+client/dist/
+server/dist/
+
+.env
+
+.vscode/
+.DS_Store
+Thumbs.db
+
+*.log
+npm-debug.log*
+
+/server/prisma/migrations/
