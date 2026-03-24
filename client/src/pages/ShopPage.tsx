@@ -1,16 +1,45 @@
+import { useState, useEffect } from 'react';
+// НОВЕ: бібліотека для відстеження скролу (ми її встановлювали)
+import { useInView } from 'react-intersection-observer'; 
 import { useShops } from '../hooks/useShops';
+// НОВЕ: тепер цей хук існує
+import { useInfiniteProducts } from '../hooks/useInfiniteProducts'; 
 import ShopSidebar from '../components/ShopSidebar';
+// НОВЕ: тепер цей компонент існує
+import ProductCard from '../components/ProductCard'; 
 import Card from '../components/ui/Card';
+import { cn } from '../lib/utils';
 
 const ShopPage = () => {
-  const { shops, selectedShopId, setSelectedShopId, loading } = useShops();
+  // НОВЕ: Стейт для фільтрів та сортування (Middle Level requirement)
+  const [category, setCategory] = useState('');
+  const [sortBy, setSortBy] = useState('name-asc');
+  
+  const { shops, selectedShopId, setSelectedShopId, loading: shopsLoading } = useShops();
+  
+  // НОВЕ: Використовуємо наш Infinite Hook, передаючи фільтри
+  const { products, loading: productsLoading, hasMore, loadMore } = useInfiniteProducts(
+    selectedShopId, 
+    category, 
+    sortBy
+  );
 
-  if (loading) return <div className="text-center py-10 font-medium">Loading shops...</div>;
+  // НОВЕ: Налаштування Observer для Infinite Scroll (Advanced Level)
+  const { ref, inView } = useInView();
+
+  // НОВЕ: Коли елемент-тригер внизу з'являється в полі зору — підвантажуємо ще
+  useEffect(() => {
+    if (inView && hasMore && !productsLoading) {
+      loadMore();
+    }
+  }, [inView, hasMore, productsLoading, loadMore]);
+
+  if (shopsLoading) return <div className="text-center py-10 font-medium">Loading shops...</div>;
 
   const currentShopName = shops.find(s => s.id === selectedShopId)?.name;
 
   return (
-    <div className="flex flex-col md:flex-row gap-6">
+    <div className={cn("flex flex-col md:flex-row gap-6")}>
       <ShopSidebar 
         shops={shops} 
         selectedShopId={selectedShopId} 
@@ -18,19 +47,60 @@ const ShopPage = () => {
       />
 
       <Card className="flex-1 min-h-150">
-        {selectedShopId ? (
-          <div>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">
-              Products from {currentShopName}
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-               {/* Наступним кроком ми додамо сюди ProductCard та Infinite Scroll */}
-               <p className="text-gray-400 italic">Loading products...</p>
-            </div>
+        {/* НОВЕ: Header зі стейтом фільтрів та сортування (Middle Level) */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <h2 className="text-2xl font-bold text-gray-800">
+            {selectedShopId ? `Products from ${currentShopName}` : 'Select a shop'}
+          </h2>
+          
+          <div className="flex flex-wrap gap-2">
+            {/* Селект Категорій */}
+            <select 
+              value={category} 
+              onChange={(e) => setCategory(e.target.value)}
+              className="px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option value="">All Categories</option>
+              <option value="Burgers">Burgers</option>
+              <option value="Drinks">Drinks</option>
+              <option value="Desserts">Desserts</option>
+            </select>
+
+            {/* Селект Сортування */}
+            <select 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option value="name-asc">Alphabetical (A → Z)</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
           </div>
+        </div>
+
+        {selectedShopId ? (
+          <>
+            {/* Сітка товарів */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product) => (
+                // Використовуємо справжній ProductCard
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            
+            {/* НОВЕ: Елемент-тригер для нескінченного скролу (Advanced Level requirement) */}
+            <div ref={ref} className="py-8 text-center flex justify-center items-center h-16 mt-6">
+              {productsLoading && <p className="text-orange-500 font-medium animate-pulse">Loading more items...</p>}
+              {!hasMore && products.length > 0 && <p className="text-gray-400 italic text-sm">No more products in this shop.</p>}
+              {!productsLoading && products.length === 0 && (
+                 <p className="text-gray-500 italic py-10">No products match your filters.</p>
+              )}
+            </div>
+          </>
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            Please select a shop to see products
+          <div className="flex items-center justify-center h-64 text-gray-400 border-2 border-dashed border-gray-100 rounded-xl">
+            Please select a shop to start ordering
           </div>
         )}
       </Card>
