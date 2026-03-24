@@ -1,9 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import ShopPage from './pages/ShopPage';
-import CartPage from './pages/CartPage';
-import HistoryPage from './pages/HistoryPage';
-import CouponsPage from './pages/CouponsPage';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import ShopPage from "./pages/ShopPage";
+import CartPage from "./pages/CartPage";
+import HistoryPage from "./pages/HistoryPage";
+import CouponsPage from "./pages/CouponsPage";
 
 function App() {
   return (

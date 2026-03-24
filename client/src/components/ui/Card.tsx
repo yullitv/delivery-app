@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { cn } from '../../lib/utils';
+import type { ReactNode } from "react";
+import { cn } from "../../lib/utils";
 
 interface CardProps {
   children: ReactNode;
@@ -8,7 +8,12 @@ interface CardProps {
 
 const Card = ({ children, className }: CardProps) => {
   return (
-    <div className={cn("bg-white p-6 rounded-xl shadow-sm border border-gray-100", className)}>
+    <div
+      className={cn(
+        "bg-white p-6 rounded-xl shadow-sm border border-gray-100",
+        className,
+      )}
+    >
       {children}
     </div>
   );

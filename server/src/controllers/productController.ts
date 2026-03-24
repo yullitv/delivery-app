@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import * as productService from '../services/productService.js';
+import { Request, Response } from "express";
+import * as productService from "../services/productService.js";
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
@@ -10,20 +10,20 @@ export const getProducts = async (req: Request, res: Response) => {
     const sortBy = req.query.sortBy as string;
 
     if (isNaN(shopId)) {
-      res.status(400).json({ error: 'Valid shop_id is required' });
+      res.status(400).json({ error: "Valid shop_id is required" });
       return;
     }
 
     const products = await productService.getProductsByShop(
-      shopId, 
-      page, 
-      limit, 
-      category, 
-      sortBy
+      shopId,
+      page,
+      limit,
+      category,
+      sortBy,
     );
     res.json(products);
   } catch (error) {
-    console.error('Controller error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };

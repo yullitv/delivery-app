@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { Request, Response, NextFunction } from 'express';
+import { z } from "zod";
+import { Request, Response, NextFunction } from "express";
 
 const orderSchema = z.object({
   userName: z.string().min(2),
@@ -7,13 +7,21 @@ const orderSchema = z.object({
   phone: z.string().min(10),
   address: z.string().min(5),
   totalPrice: z.number().positive(),
-  items: z.array(z.object({
-    productId: z.number(),
-    quantity: z.number().int().positive(),
-  })).min(1),
+  items: z
+    .array(
+      z.object({
+        productId: z.number(),
+        quantity: z.number().int().positive(),
+      }),
+    )
+    .min(1),
 });
 
-export const validateOrder = (req: Request, res: Response, next: NextFunction) => {
+export const validateOrder = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     orderSchema.parse(req.body);
     next();

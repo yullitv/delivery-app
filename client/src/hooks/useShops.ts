@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { getShops } from '../api/shopService';
-import type { Shop } from '../types';
+import { useState, useEffect } from "react";
+import { getShops } from "../api/shopService";
+import type { Shop } from "../types";
 
 export const useShops = () => {
   const [shops, setShops] = useState<Shop[]>([]);
@@ -16,7 +16,7 @@ export const useShops = () => {
           setSelectedShopId(data[0].id);
         }
       } catch (error) {
-        console.error('Failed to fetch shops:', error);
+        console.error("Failed to fetch shops:", error);
       } finally {
         setLoading(false);
       }

@@ -1,7 +1,7 @@
-import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, History, Store, Ticket } from 'lucide-react';
-import { useCartStore } from '../store/useCartStore';
-import { cn } from '../lib/utils';
+import { Link, useLocation } from "react-router-dom";
+import { ShoppingCart, History, Store, Ticket } from "lucide-react";
+import { useCartStore } from "../store/useCartStore";
+import { cn } from "../lib/utils";
 
 const Navbar = () => {
   const location = useLocation();
@@ -9,20 +9,28 @@ const Navbar = () => {
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const navLinks = [
-    { path: '/', name: 'Shop', icon: <Store size={20} /> },
-    { path: '/cart', name: 'Shopping Cart', icon: <ShoppingCart size={20} />, count: totalItems },
-    { path: '/history', name: 'History', icon: <History size={20} /> },
-    { path: '/coupons', name: 'Coupons', icon: <Ticket size={20} /> },
+    { path: "/", name: "Shop", icon: <Store size={20} /> },
+    {
+      path: "/cart",
+      name: "Shopping Cart",
+      icon: <ShoppingCart size={20} />,
+      count: totalItems,
+    },
+    { path: "/history", name: "History", icon: <History size={20} /> },
+    { path: "/coupons", name: "Coupons", icon: <Ticket size={20} /> },
   ];
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="text-2xl font-bold text-orange-600 flex items-center gap-2">
+          <Link
+            to="/"
+            className="text-2xl font-bold text-orange-600 flex items-center gap-2"
+          >
             DeliveryApp
           </Link>
-          
+
           <div className="flex gap-2 md:gap-6">
             {navLinks.map((link) => (
               <Link
@@ -30,7 +38,8 @@ const Navbar = () => {
                 to={link.path}
                 className={cn(
                   "flex items-center gap-2 px-3 py-2 rounded-md transition-colors font-medium text-gray-600 hover:text-orange-500 hover:bg-gray-50",
-                  location.pathname === link.path && "text-orange-600 bg-orange-50"
+                  location.pathname === link.path &&
+                    "text-orange-600 bg-orange-50",
                 )}
               >
                 <span className="relative">

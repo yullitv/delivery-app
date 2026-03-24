@@ -1,4 +1,4 @@
-import { prisma } from '../lib/prisma.js';
+import { prisma } from "../lib/prisma.js";
 
 export const createOrder = async (orderData: any) => {
   return await prisma.order.create({
@@ -32,6 +32,6 @@ export const getOrdersByContact = async (email?: string, phone?: string) => {
         include: { product: true },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 };
