@@ -7,9 +7,14 @@ import orderRoutes from "./routes/orderRoutes.js";
 import couponRoutes from "./routes/couponRoutes.js";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+const PORT = Number(process.env.PORT) || 5000;
+
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use("/api/shops", shopRoutes);
@@ -21,6 +26,6 @@ app.get("/", (req, res) => {
   res.send("API is running");
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server started on port ${PORT}`);
 });
