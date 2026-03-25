@@ -11,7 +11,7 @@ import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
 import CartItem from "../components/CartItem";
 import OrderSummary from "../components/OrderSummary";
-import { Send } from "lucide-react";
+import { Send, ShoppingBag } from "lucide-react";
 import { cn } from "../lib/utils";
 
 const CartPage = () => {
@@ -69,24 +69,34 @@ const CartPage = () => {
       });
   };
 
-  const applyCoupon = () => {
-    if (couponCode.toUpperCase() === "WELCOME10") {
-      setDiscountPercent(10);
-      toast.success("Coupon applied! 10% discount added.");
+const applyCoupon = () => {
+    const code = couponCode.toUpperCase().trim();
+    
+    const rewards: Record<string, number> = {
+      "WELCOME10": 10,
+      "ELIFTECH": 15,
+      "SPRING20": 20,
+      "HOTDEAL30": 30
+    };
+
+    if (rewards[code]) {
+      setDiscountPercent(rewards[code]);
+      toast.success(`Coupon applied! ${rewards[code]}% discount added.`);
     } else {
-      toast.error("Invalid coupon code. Try WELCOME10");
+      toast.error("Invalid coupon code. Check the Coupons page!");
       setDiscountPercent(0);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      !validateField("name", formData.name) ||
-      !validateField("email", formData.email) ||
-      !validateField("phone", formData.phone) ||
-      !validateField("address", formData.address)
-    ) {
+    
+    const isNameValid = validateField("name", formData.name);
+    const isEmailValid = validateField("email", formData.email);
+    const isPhoneValid = validateField("phone", formData.phone);
+    const isAddressValid = validateField("address", formData.address);
+
+    if (!isNameValid || !isEmailValid || !isPhoneValid || !isAddressValid) {
       toast.error("Please fill all fields correctly");
       return;
     }
@@ -105,12 +115,14 @@ const CartPage = () => {
           price: item.price,
         })),
       });
+      
       toast.success("Order placed successfully!", { duration: 4000 });
       clearCart();
       setFormData({ name: "", email: "", phone: "", address: "" });
       setDiscountPercent(0);
       setCouponCode("");
-    } catch (error) {
+    } catch (err) {
+      console.error("Order submission failed:", err);
       toast.error("Failed to place order. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -120,7 +132,9 @@ const CartPage = () => {
   if (items.length === 0) {
     return (
       <Card className="text-center py-20 animate-in fade-in duration-500">
-        <div className="text-6xl mb-4"></div>
+        <div className="flex justify-center mb-4">
+            <ShoppingBag size={64} className="text-gray-200" />
+        </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
           Your cart is empty
         </h2>
@@ -183,7 +197,6 @@ const CartPage = () => {
             onBlur={(e) => validateField("address", e.target.value)}
             error={errors.address}
             disabled={isSubmitting}
-            rows={3}
             placeholder="Street, building, apt..."
           />
         </form>

@@ -16,7 +16,6 @@ export const getProducts = async (
       category: categories, 
       sortBy,
     },
-    // Ця штука гарантує формат ?category=Burgers&category=Drinks
     paramsSerializer: {
       indexes: null 
     }

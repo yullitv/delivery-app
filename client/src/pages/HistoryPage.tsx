@@ -17,11 +17,26 @@ import {
   MapPin,
   Info,
 } from "lucide-react";
+import type { Product } from "../types";
+
+interface OrderItemHistory {
+  id: number;
+  quantity: number;
+  product: Product;
+}
+
+interface OrderHistory {
+  id: number;
+  address: string;
+  totalPrice: number;
+  createdAt: string;
+  items: OrderItemHistory[];
+}
 
 const HistoryPage = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<OrderHistory[]>([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
 
@@ -58,14 +73,15 @@ const HistoryPage = () => {
       } else {
         toast.success(`Found ${data.length} orders`);
       }
-    } catch (error) {
+    } catch (err) {
+      console.error("Search failed:", err);
       toast.error("Failed to fetch history");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleReorder = (orderItems: any[]) => {
+  const handleReorder = (orderItems: OrderItemHistory[]) => {
     orderItems.forEach((item) => {
       for (let i = 0; i < item.quantity; i++) {
         addItem(item.product);
@@ -158,7 +174,7 @@ const HistoryPage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 border-t border-gray-50">
-                  {order.items.map((item: any) => (
+                  {order.items.map((item: OrderItemHistory) => (
                     <div
                       key={item.id}
                       className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg"
@@ -174,8 +190,7 @@ const HistoryPage = () => {
                 </div>
               </Card>
             ))
-          : !loading &&
-            orders.length === 0 && (
+          : !loading && (
               <div className="text-center py-20 text-gray-400 italic bg-white rounded-xl border-2 border-dashed border-gray-100">
                 No orders found. Enter details above to see your history.
               </div>

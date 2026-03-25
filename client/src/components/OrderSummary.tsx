@@ -1,4 +1,4 @@
-import { Loader2, TicketCheck } from "lucide-react";
+import { Loader2, TicketCheck, Check } from "lucide-react";
 import Card from "./ui/Card";
 import { cn } from "../lib/utils";
 
@@ -31,17 +31,23 @@ const OrderSummary = ({
           <span>Have a coupon?</span>
         </div>
         <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Code: WELCOME10"
-            value={couponCode}
-            onChange={(e) => setCouponCode(e.target.value)}
-            className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-orange-500 uppercase font-mono transition-all"
-          />
+          <div className="relative flex-1">
+            <input
+              type="text"
+              placeholder="e.g. WELCOME10"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+              className="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-orange-500 uppercase font-mono transition-all"
+            />
+            {discountPercent > 0 && (
+              <Check size={16} className="absolute right-3 top-2.5 text-green-500 animate-in zoom-in" />
+            )}
+          </div>
           <button
             type="button"
             onClick={onApplyCoupon}
-            className="px-4 py-2 bg-gray-800 text-white text-sm font-bold rounded-lg hover:bg-black transition-colors active:scale-95"
+            disabled={!couponCode.trim() || isSubmitting}
+            className="px-4 py-2 bg-gray-800 text-white text-sm font-bold rounded-lg hover:bg-black transition-colors active:scale-95 disabled:opacity-50"
           >
             Apply
           </button>
@@ -50,17 +56,17 @@ const OrderSummary = ({
 
       <Card className="bg-orange-50/30 border-orange-100">
         <div className="space-y-2 mb-6">
-          <div className="flex justify-between text-gray-500 text-sm">
+          <div className="flex justify-between text-gray-500 text-sm font-medium">
             <span>Subtotal:</span>
             <span>₴{subtotal.toFixed(2)}</span>
           </div>
           {discountPercent > 0 && (
-            <div className="flex justify-between text-green-600 font-medium text-sm animate-in fade-in">
+            <div className="flex justify-between text-green-600 font-bold text-sm animate-in slide-in-from-top-1">
               <span>Discount ({discountPercent}%):</span>
               <span>-₴{discountAmount.toFixed(2)}</span>
             </div>
           )}
-          <div className="flex justify-between items-center pt-2 border-t border-orange-100">
+          <div className="flex justify-between items-center pt-3 border-t border-orange-100 mt-2">
             <span className="text-gray-800 font-bold text-lg">
               Total Amount:
             </span>
