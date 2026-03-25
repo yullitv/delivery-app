@@ -1,27 +1,35 @@
 import { Request, Response } from "express";
 import * as orderService from "../services/orderService.js";
+import { validateEmail, validatePhone, normalizePhoneNumber } from "../lib/validation.js";
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { userName, email, phone, address, items } = req.body;
+    const { userName, email, phone, address, items, totalPrice } = req.body;
 
-    if (!userName || !email || !phone || !address || !items) {
+    if (!userName || !email || !phone || !address || !items || !totalPrice) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    if (!Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ error: "Cart cannot be empty" });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!validateEmail(email)) {
       return res.status(400).json({ error: "Invalid email format" });
     }
 
-    const order = await orderService.createOrder(req.body);
+    if (!validatePhone(phone)) {
+      return res.status(400).json({ error: "Invalid phone format. Expected +380XXXXXXXXX" });
+    }
+
+    const order = await orderService.createOrder({
+      userName: userName.trim(),
+      email: email.toLowerCase().trim(),
+      phone: normalizePhoneNumber(phone),
+      address: address.trim(),
+      items,
+      totalPrice: Number(totalPrice)
+    });
+
     res.status(201).json(order);
   } catch (error) {
-    console.error("Create order error:", error);
+    console.error(error);
     res.status(500).json({ error: "Failed to create order" });
   }
 };
@@ -31,17 +39,16 @@ export const getOrdersByContact = async (req: Request, res: Response) => {
     const { email, phone } = req.query;
 
     if (!email && !phone) {
-      return res
-        .status(400)
-        .json({ error: "Email or phone required for search" });
+      return res.status(400).json({ error: "Email or phone required" });
     }
 
-    const orders = await orderService.getOrdersByContact(
-      email as string,
-      phone as string,
-    );
+    const searchEmail = email ? (email as string).toLowerCase().trim() : "";
+    const searchPhone = phone ? normalizePhoneNumber(phone as string) : "";
+
+    const orders = await orderService.getOrdersByContact(searchEmail, searchPhone);
     res.json(orders);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Failed to fetch orders" });
   }
 };
