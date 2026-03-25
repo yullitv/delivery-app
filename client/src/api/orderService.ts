@@ -33,9 +33,15 @@ export const submitOrder = async (orderData: CreateOrderDto) => {
   return response.data;
 };
 
-export const getOrderHistory = async (email: string, phone: string): Promise<OrderHistoryResponse[]> => {
-  const response = await apiClient.get<OrderHistoryResponse[]>("/orders/history", {
-    params: { email, phone },
-  });
+export const getOrderHistory = async (
+  email: string,
+  phone: string,
+): Promise<OrderHistoryResponse[]> => {
+  const response = await apiClient.get<OrderHistoryResponse[]>(
+    "/orders/history",
+    {
+      params: { email, phone },
+    },
+  );
   return response.data;
 };

@@ -1,7 +1,8 @@
 import type { Product } from "../types";
-import { cn } from "../lib/utils";
 import { useCartStore } from "../store/useCartStore";
 import { ShoppingBasket, UtensilsCrossed } from "lucide-react";
+import Button from "./ui/Button";
+import { cn } from "../lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -19,18 +20,20 @@ const ProductCard = ({ product }: ProductCardProps) => {
     >
       <div className="aspect-video bg-gray-50 relative overflow-hidden flex items-center justify-center">
         {product.image ? (
-          <img 
-            src={product.image} 
-            alt={product.name} 
+          <img
+            src={product.image}
+            alt={product.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="flex flex-col items-center justify-center text-orange-200">
             <UtensilsCrossed size={48} strokeWidth={1.5} />
-            <span className="text-[10px] font-bold uppercase tracking-widest mt-2 opacity-50">Delicious</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest mt-2 opacity-50">
+              Delicious
+            </span>
           </div>
         )}
-        
+
         <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-sm font-bold text-gray-800 shadow-sm">
           ₴{product.price.toFixed(2)}
         </div>
@@ -46,16 +49,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </p>
         </div>
 
-        <button
+        <Button
           onClick={() => addItem(product)}
-          className={cn(
-            "mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg",
-            "flex items-center justify-center gap-2 transition-colors font-medium active:scale-95",
-          )}
+          variant="primary"
+          className="mt-4 w-full py-2 shadow-none group-hover:shadow-md"
         >
           <ShoppingBasket size={18} />
           Add to Cart
-        </button>
+        </Button>
       </div>
     </div>
   );

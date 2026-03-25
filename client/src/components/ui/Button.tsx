@@ -14,12 +14,11 @@ const Button = ({
 }: ButtonProps) => {
   const variants = {
     primary:
-      "bg-brand hover:bg-brand-dark text-white shadow-md shadow-brand/20",
-    outline: "border-2 border-brand text-brand hover:bg-brand-light",
+      "bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-100",
+    outline: "border-2 border-orange-500 text-orange-500 hover:bg-orange-50",
     ghost: "text-gray-600 hover:bg-gray-100",
     danger: "bg-red-500 hover:bg-red-600 text-white shadow-md shadow-red-100",
   };
-
   return (
     <button
       className={cn(

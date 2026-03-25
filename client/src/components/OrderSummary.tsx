@@ -1,6 +1,6 @@
-import { Loader2, TicketCheck, Check } from "lucide-react";
+import { Loader2, TicketCheck, Check, ShoppingBag } from "lucide-react";
 import Card from "./ui/Card";
-import { cn } from "../lib/utils";
+import Button from "./ui/Button";
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -40,17 +40,20 @@ const OrderSummary = ({
               className="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-orange-500 uppercase font-mono transition-all"
             />
             {discountPercent > 0 && (
-              <Check size={16} className="absolute right-3 top-2.5 text-green-500 animate-in zoom-in" />
+              <Check
+                size={16}
+                className="absolute right-3 top-2.5 text-green-500 animate-in zoom-in"
+              />
             )}
           </div>
-          <button
-            type="button"
+          <Button
+            variant="ghost"
             onClick={onApplyCoupon}
             disabled={!couponCode.trim() || isSubmitting}
-            className="px-4 py-2 bg-gray-800 text-white text-sm font-bold rounded-lg hover:bg-black transition-colors active:scale-95 disabled:opacity-50"
+            className="px-4 py-2 text-sm h-full"
           >
             Apply
-          </button>
+          </Button>
         </div>
       </Card>
 
@@ -76,23 +79,24 @@ const OrderSummary = ({
           </div>
         </div>
 
-        <button
+        <Button
           type="submit"
           form="order-form"
+          variant="primary"
           disabled={isSubmitting}
-          className={cn(
-            "w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-orange-200 transition-all flex justify-center items-center gap-2",
-            "disabled:bg-orange-300 disabled:cursor-not-allowed active:scale-[0.98]",
-          )}
+          className="w-full py-4 text-lg"
         >
           {isSubmitting ? (
             <>
               <Loader2 className="animate-spin" /> Processing...
             </>
           ) : (
-            "Confirm & Order"
+            <>
+              <ShoppingBag size={20} />
+              Confirm & Order
+            </>
           )}
-        </button>
+        </Button>
       </Card>
     </div>
   );

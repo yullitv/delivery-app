@@ -1,5 +1,6 @@
 import { Minus, Plus, Trash2, Utensils } from "lucide-react";
 import type { Product } from "../types";
+import Button from "./ui/Button";
 
 interface CartItemProps {
   item: Product & { quantity: number };
@@ -34,34 +35,40 @@ const CartItem = ({
       </h3>
       <p className="text-orange-600 font-bold">₴{item.price.toFixed(2)}</p>
     </div>
-    <div className="flex items-center gap-1 md:gap-3 bg-gray-50 p-1 rounded-lg border border-gray-100">
-      <button
+    <div className="flex items-center gap-1 md:gap-2 bg-gray-50 p-1 rounded-lg border border-gray-100">
+      <Button
         type="button"
+        variant="ghost"
         onClick={() =>
           onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))
         }
-        className="p-1 hover:bg-white rounded disabled:opacity-50 transition-all hover:shadow-sm"
+        className="p-1 px-1 py-1 h-8 w-8 rounded-lg hover:bg-white"
         disabled={disabled}
       >
-        <Minus size={16} />
-      </button>
+        <Minus size={14} />
+      </Button>
+
       <span className="font-bold w-6 text-center text-sm">{item.quantity}</span>
-      <button
+
+      <Button
         type="button"
+        variant="ghost"
         onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-        className="p-1 hover:bg-white rounded disabled:opacity-50 transition-all hover:shadow-sm"
+        className="p-1 px-1 py-1 h-8 w-8 rounded-lg hover:bg-white"
         disabled={disabled}
       >
-        <Plus size={16} />
-      </button>
-      <button
+        <Plus size={14} />
+      </Button>
+
+      <Button
         type="button"
+        variant="ghost"
         onClick={() => onRemove(item.id)}
-        className="ml-2 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-all"
+        className="ml-1 p-0 h-9 w-9 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg"
         disabled={disabled}
       >
         <Trash2 size={18} />
-      </button>
+      </Button>
     </div>
   </div>
 );

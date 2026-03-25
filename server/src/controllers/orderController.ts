@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import * as orderService from "../services/orderService.js";
-import { validateEmail, validatePhone, normalizePhoneNumber } from "../lib/validation.js";
+import {
+  validateEmail,
+  validatePhone,
+  normalizePhoneNumber,
+} from "../lib/validation.js";
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
@@ -15,7 +19,9 @@ export const createOrder = async (req: Request, res: Response) => {
     }
 
     if (!validatePhone(phone)) {
-      return res.status(400).json({ error: "Invalid phone format. Expected +380XXXXXXXXX" });
+      return res
+        .status(400)
+        .json({ error: "Invalid phone format. Expected +380XXXXXXXXX" });
     }
 
     const order = await orderService.createOrder({
@@ -24,7 +30,7 @@ export const createOrder = async (req: Request, res: Response) => {
       phone: normalizePhoneNumber(phone),
       address: address.trim(),
       items,
-      totalPrice: Number(totalPrice)
+      totalPrice: Number(totalPrice),
     });
 
     res.status(201).json(order);
@@ -45,7 +51,10 @@ export const getOrdersByContact = async (req: Request, res: Response) => {
     const searchEmail = email ? (email as string).toLowerCase().trim() : "";
     const searchPhone = phone ? normalizePhoneNumber(phone as string) : "";
 
-    const orders = await orderService.getOrdersByContact(searchEmail, searchPhone);
+    const orders = await orderService.getOrdersByContact(
+      searchEmail,
+      searchPhone,
+    );
     res.json(orders);
   } catch (error) {
     console.error(error);

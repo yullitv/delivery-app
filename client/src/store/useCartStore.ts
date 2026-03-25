@@ -18,7 +18,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       items: [],
-      
+
       addItem: (product: Product) =>
         set((state) => {
           const existing = state.items.find((item) => item.id === product.id);
@@ -50,6 +50,6 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "delivery-app-cart",
-    }
-  )
+    },
+  ),
 );

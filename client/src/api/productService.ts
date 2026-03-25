@@ -13,12 +13,12 @@ export const getProducts = async (
       shop_id: shopId,
       page,
       limit,
-      category: categories, 
+      category: categories,
       sortBy,
     },
     paramsSerializer: {
-      indexes: null 
-    }
+      indexes: null,
+    },
   });
   return response.data;
 };

@@ -2,14 +2,36 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { getOrderHistory } from "../api/orderService";
 import { useCartStore } from "../store/useCartStore";
-import { normalizePhoneNumber, validateEmail, validatePhone } from "../lib/validation";
+import {
+  normalizePhoneNumber,
+  validateEmail,
+  validatePhone,
+} from "../lib/validation";
 import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
-import { Search, RotateCcw, Package, Calendar, MapPin, Info } from "lucide-react";
+import Button from "../components/ui/Button";
+import {
+  Search,
+  RotateCcw,
+  Package,
+  Calendar,
+  MapPin,
+  Info,
+} from "lucide-react";
 import type { Product } from "../types";
 
-interface OrderItemHistory { id: number; quantity: number; product: Product; }
-interface OrderHistory { id: number; address: string; totalPrice: number; createdAt: string; items: OrderItemHistory[]; }
+interface OrderItemHistory {
+  id: number;
+  quantity: number;
+  product: Product;
+}
+interface OrderHistory {
+  id: number;
+  address: string;
+  totalPrice: number;
+  createdAt: string;
+  items: OrderItemHistory[];
+}
 
 const HistoryPage = () => {
   const [email, setEmail] = useState("");
@@ -20,14 +42,16 @@ const HistoryPage = () => {
 
   const addItem = useCartStore((state) => state.addItem);
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handlePhoneChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const value = e.target.value;
     if (!value.startsWith("+380")) {
       setPhone("+380");
       return;
     }
     if (value.length <= 13) setPhone(value);
-    if (errors.phone) setErrors(prev => ({ ...prev, phone: "" }));
+    if (errors.phone) setErrors((prev) => ({ ...prev, phone: "" }));
   };
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -41,11 +65,14 @@ const HistoryPage = () => {
 
     let hasError = false;
     if (email && !validateEmail(email)) {
-      setErrors(prev => ({ ...prev, email: "Invalid email format" }));
+      setErrors((prev) => ({ ...prev, email: "Invalid email format" }));
       hasError = true;
     }
     if (isPhoneUsed && !validatePhone(phone)) {
-      setErrors(prev => ({ ...prev, phone: "Phone must be +380 and 9 digits" }));
+      setErrors((prev) => ({
+        ...prev,
+        phone: "Phone must be +380 and 9 digits",
+      }));
       hasError = true;
     }
 
@@ -87,53 +114,89 @@ const HistoryPage = () => {
         </div>
         <form onSubmit={handleSearch} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input label="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} error={errors.email} placeholder="user@example.com" />
-            <Input label="Phone Number" type="tel" value={phone} onChange={handlePhoneChange} error={errors.phone} />
+            <Input
+              label="Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={errors.email}
+              placeholder="user@example.com"
+            />
+            <Input
+              label="Phone Number"
+              type="tel"
+              value={phone}
+              onChange={handlePhoneChange}
+              error={errors.phone}
+            />
           </div>
-          <button type="submit" disabled={loading} className="w-full md:w-fit px-12 bg-orange-500 text-white font-bold py-3 rounded-xl hover:bg-orange-600 active:scale-95 transition-all">
+          <Button
+            type="submit"
+            disabled={loading}
+            variant="primary"
+            className="w-full md:w-fit md:px-12"
+          >
             {loading ? "Searching..." : "Search Orders"}
-          </button>
+          </Button>
         </form>
       </Card>
 
       <div className="space-y-6">
-        {orders.length > 0 ? (
-          orders.map((order) => (
-            <Card key={order.id} className="border-l-4 border-l-orange-500 hover:shadow-md transition-shadow">
-              <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Calendar size={14} /> {new Date(order.createdAt).toLocaleDateString()}
+        {orders.length > 0
+          ? orders.map((order) => (
+              <Card
+                key={order.id}
+                className="border-l-4 border-l-orange-500 hover:shadow-md transition-shadow"
+              >
+                <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <Calendar size={14} />{" "}
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                      <Package size={18} className="text-orange-400" />
+                      Order #{order.id}
+                    </h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <MapPin size={14} /> {order.address}
+                    </div>
                   </div>
-                  {/* ОСЬ ТУТ ТЕПЕР ВИКОРИСТОВУЄТЬСЯ PACKAGE */}
-                  <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    <Package size={18} className="text-orange-400" />
-                    Order #{order.id}
-                  </h3>
-                  <div className="flex items-center gap-2 text-sm text-gray-600"><MapPin size={14} /> {order.address}</div>
-                </div>
-                <div className="text-right space-y-2">
-                  <div className="text-2xl font-black text-gray-900">₴{order.totalPrice.toFixed(2)}</div>
-                  <button onClick={() => handleReorder(order.items)} className="flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-bold hover:bg-orange-200 active:scale-95 ml-auto">
-                    <RotateCcw size={18} /> Reorder
-                  </button>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 border-t border-gray-50">
-                {order.items.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg">
-                    <div className="w-10 h-10 bg-white rounded flex items-center justify-center text-xs font-bold text-orange-500 shadow-sm">x{item.quantity}</div>
-                    <div className="text-sm font-medium text-gray-700 truncate">{item.product.name}</div>
+                  <div className="text-right space-y-2">
+                    <div className="text-2xl font-black text-gray-900">
+                      ₴{order.totalPrice.toFixed(2)}
+                    </div>
+                    <Button
+                      onClick={() => handleReorder(order.items)}
+                      variant="outline"
+                      className="ml-auto px-4 py-2 text-sm"
+                    >
+                      <RotateCcw size={18} /> Reorder
+                    </Button>
                   </div>
-                ))}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 border-t border-gray-50">
+                  {order.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg"
+                    >
+                      <div className="w-10 h-10 bg-white rounded flex items-center justify-center text-xs font-bold text-orange-500 shadow-sm">
+                        x{item.quantity}
+                      </div>
+                      <div className="text-sm font-medium text-gray-700 truncate">
+                        {item.product.name}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            ))
+          : !loading && (
+              <div className="text-center py-20 text-gray-400 italic bg-white rounded-xl border-2 border-dashed border-gray-100">
+                No orders found. Enter details above to see your history.
               </div>
-            </Card>
-          ))
-        ) : !loading && (
-          <div className="text-center py-20 text-gray-400 italic bg-white rounded-xl border-2 border-dashed border-gray-100">
-            No orders found. Enter details above to see your history.
-          </div>
-        )}
+            )}
       </div>
     </div>
   );
