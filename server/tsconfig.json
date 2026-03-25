@@ -4,7 +4,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -18,5 +18,5 @@
     "moduleDetection": "force",
     "types": ["node"]
   },
-  "include": ["src/**/*", "prisma.config.ts", "prisma/seed.ts"]
+  "include": ["src/**/*"]
 }
