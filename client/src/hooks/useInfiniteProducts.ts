@@ -4,7 +4,7 @@ import type { Product } from "../types";
 
 export const useInfiniteProducts = (
   shopId: number | null,
-  category: string,
+  categories: string[],
   sortBy: string,
 ) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -12,11 +12,13 @@ export const useInfiniteProducts = (
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
+  const categoriesKey = JSON.stringify(categories);
+
   useEffect(() => {
     setProducts([]);
     setPage(1);
     setHasMore(true);
-  }, [shopId, category, sortBy]);
+  }, [shopId, categoriesKey, sortBy]);
 
   const loadMore = useCallback(async () => {
     if (!shopId || loading || !hasMore) return;
@@ -24,21 +26,21 @@ export const useInfiniteProducts = (
     setLoading(true);
     try {
       const limit = 9;
-      const data = await getProducts(shopId, page, limit, category, sortBy);
+      const data = await getProducts(shopId, page, limit, categories, sortBy);
 
       if (data.length < limit) {
         setHasMore(false);
       }
 
-      setProducts((prev) => [...prev, ...data]);
-
+      setProducts((prev) => (page === 1 ? data : [...prev, ...data]));
       setPage((prev) => prev + 1);
     } catch (error) {
       console.error("Failed to load products:", error);
     } finally {
       setLoading(false);
     }
-  }, [shopId, page, loading, hasMore, category, sortBy]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shopId, page, loading, hasMore, categoriesKey, sortBy]);
 
   return { products, loading, hasMore, loadMore };
 };

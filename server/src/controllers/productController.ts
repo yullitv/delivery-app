@@ -6,8 +6,16 @@ export const getProducts = async (req: Request, res: Response) => {
     const shopId = parseInt(req.query.shop_id as string);
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 9;
-    const category = req.query.category as string;
     const sortBy = req.query.sortBy as string;
+
+    let categories: string[] = [];
+    const queryCat = req.query.category || req.query["category[]"];
+
+    if (queryCat) {
+      categories = Array.isArray(queryCat)
+        ? (queryCat as string[])
+        : [queryCat as string];
+    }
 
     if (isNaN(shopId)) {
       res.status(400).json({ error: "Valid shop_id is required" });
@@ -18,7 +26,7 @@ export const getProducts = async (req: Request, res: Response) => {
       shopId,
       page,
       limit,
-      category,
+      categories,
       sortBy,
     );
     res.json(products);

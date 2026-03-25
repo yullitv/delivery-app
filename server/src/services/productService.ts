@@ -4,7 +4,7 @@ export const getProductsByShop = async (
   shopId: number,
   page: number,
   limit: number,
-  category?: string,
+  categories?: string[],
   sortBy?: string,
 ) => {
   const skip = (page - 1) * limit;
@@ -13,11 +13,14 @@ export const getProductsByShop = async (
   if (sortBy === "price-asc") orderBy = { price: "asc" };
   if (sortBy === "price-desc") orderBy = { price: "desc" };
   if (sortBy === "name-asc") orderBy = { name: "asc" };
+  if (sortBy === "name-desc") orderBy = { name: "desc" };
 
   return await prisma.product.findMany({
     where: {
       shopId,
-      ...(category && category !== "" ? { category } : {}),
+      ...(categories && categories.length > 0
+        ? { category: { in: categories } }
+        : {}),
     },
     skip,
     take: limit,
